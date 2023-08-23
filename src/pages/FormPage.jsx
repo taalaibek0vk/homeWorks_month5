@@ -1,29 +1,39 @@
-import React, { useState } from 'react';
-import axios from 'axios'
-import { useEffect } from 'react'
+import axios from 'axios';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+function FormsPage() {
+  const navigate = useNavigate(); 
+
+  const [title, setTitle] = useState('');
+  const [body, setBody] = useState('');
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    axios.post('https://dummyjson.com/posts', {
+        title,
+        body
+      });
+    } 
 
 
-export default function FormPage() {
-  const [tasks, setTasks] = useState([]);
-
-  useEffect(() => {
-        axios.get('https://dummyjson.com/posts/1')
-        .then(response => {
-            const data = response.data;
-            setTasks(data.posts);
-        })
-    }, []);
   return (
     <div>
-      <h3>Создать пост</h3>
-      <button onClick={tasks.map((task) => (
-          <div key={task.id}>
-            <h4>{task.title}</h4>
-            <p>{task.body}</p>
-            <p>{task.tags}</p>
-            </div>
-      ))}
-      >Создать</button>
+      <h2>Create a New Post</h2>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label>Title: </label>
+          <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
+        </div>
+        <div className='post-form'>
+          <label>Body: </label>
+          <textarea value={body} onChange={(e) => setBody(e.target.value)} />
+        </div>
+      <button onClick={() => navigate(`/posts`)}>Create Post</button>
+
+      </form>
     </div>
   );
-};
+}
+
+export default FormsPage;
